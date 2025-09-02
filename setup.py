@@ -110,9 +110,12 @@ from pathlib import Path
 cortex_dir = Path(__file__).parent / "cortex_on"
 os.chdir(cortex_dir)
 
-# Set Python path
+# Set Python path to ensure local imports work
 sys.path.insert(0, str(cortex_dir))
 os.environ['PYTHONPATH'] = str(cortex_dir)
+
+print(f"🚀 Starting CortexON Backend from {cortex_dir}")
+print("📍 API will be available at http://localhost:8081")
 
 # Start the service
 import uvicorn
@@ -132,9 +135,12 @@ from pathlib import Path
 browser_dir = Path(__file__).parent / "ta-browser"
 os.chdir(browser_dir)
 
-# Set Python path
+# Set Python path to ensure local imports work
 sys.path.insert(0, str(browser_dir))
 os.environ['PYTHONPATH'] = str(browser_dir)
+
+print(f"🚀 Starting Agentic Browser from {browser_dir}")
+print("📍 API will be available at http://localhost:8000")
 
 # Start the service
 import uvicorn
@@ -148,11 +154,29 @@ if __name__ == "__main__":
             f.write('''#!/usr/bin/env python3
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 # Change to frontend directory
 frontend_dir = Path(__file__).parent / "frontend"
+
+# Check if Node.js is available
+try:
+    subprocess.run(['node', '--version'], capture_output=True, check=True)
+except (FileNotFoundError, subprocess.CalledProcessError):
+    print("❌ Node.js not found. Please install Node.js 18+ to run the frontend.")
+    sys.exit(1)
+
+# Check if node_modules exists
+if not (frontend_dir / "node_modules").exists():
+    print("📦 Installing frontend dependencies...")
+    os.chdir(frontend_dir)
+    subprocess.run(["npm", "install"], check=True)
+    print("✅ Frontend dependencies installed")
+
 os.chdir(frontend_dir)
+print(f"🚀 Starting Frontend from {frontend_dir}")
+print("📍 Frontend will be available at http://localhost:3000")
 
 # Start the frontend development server
 if __name__ == "__main__":
@@ -199,16 +223,18 @@ if __name__ == "__main__":
                 thread.daemon = True
                 thread.start()
                 threads.append(thread)
-                time.sleep(2)  # Stagger startup
+                time.sleep(3)  # Stagger startup more
             else:
                 print(f"⚠️  {script} not found, skipping {name}")
         
-        print("\\n✅ All services started!")
+        print("\\n" + "=" * 60)
+        print("✅ All services started!")
         print("📍 Access points:")
-        print("   - CortexON Backend: http://localhost:8081")
-        print("   - Agentic Browser: http://localhost:8000") 
+        print("   - CortexON Backend: http://localhost:8081 (API Docs: /docs)")
+        print("   - Agentic Browser: http://localhost:8000 (API Docs: /docs)") 
         print("   - Frontend: http://localhost:3000")
-        print("\\n🔄 Services are running. Press Ctrl+C to stop all services.\\n")
+        print("=" * 60)
+        print("🔄 Services are running. Press Ctrl+C to stop all services.\\n")
         
         # Keep main thread alive
         while True:
