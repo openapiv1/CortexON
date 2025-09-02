@@ -19,8 +19,9 @@ CortexON is an open-source, multi-agent AI system inspired by advanced agent pla
 - [Key Capabilities](#key-capabilities)
 - [Technical Stack](#technical-stack)
 - [Quick Start Installation](#quick-start-installation)
+  - [Prerequisites](#prerequisites)
   - [Environment Variables](#environment-variables)
-  - [Docker Setup](#docker-setup)
+  - [Python Setup](#python-setup)
   - [Access Services](#access-services)
 - [Contributing](#contributing)
 - [Code of Conduct](#code-of-conduct)
@@ -72,9 +73,15 @@ CortexON is built using:
 
 ## Quick Start Installation
 
+### Prerequisites
+
+- **Python 3.10+** - Required for backend services
+- **Node.js 18+** - Required for frontend development
+- **Git** - For cloning the repository
+
 ### Environment Variables
 
-Create a `.env` file with the following required variables:
+Create a `.env` file in the root directory with the following required variables:
 
 #### Anthropic API
 - `ANTHROPIC_MODEL_NAME=claude-3-7-sonnet-20250219`
@@ -99,7 +106,7 @@ Follow the steps at [Google Custom Search API](https://developers.google.com/cus
 
 Create your token at [LogFire](https://pydantic.dev/logfire).
 
-#### Vault Integration(OPTIONAL)
+#### Vault Integration (OPTIONAL)
 - `VITE_APP_API_BASE_URL=http://localhost:8000`
 - `VITE_APP_VA_NAMESPACE=your_unique_namespace_id` (format unrestricted, UUID recommended)
 - `VA_TOKEN=your_vault_authentication_token`
@@ -112,7 +119,7 @@ This project uses HashiCorp Cloud Platform (HCP) Vault for secure secrets manage
 #### WebSocket
 - `VITE_WEBSOCKET_URL=ws://localhost:8081/ws`
 
-### Docker Setup
+### Python Setup
 
 1. Clone the CortexON repository:
 ```sh
@@ -120,14 +127,32 @@ git clone https://github.com/TheAgenticAI/CortexOn.git
 cd CortexOn
 ```
 
-2. Setup environment variables
-
-3. **Docker Desktop Users (Optional)**: Enable host networking in Docker Desktop settings ([Guide](https://docs.docker.com/engine/network/drivers/host/)).
-
-4. Build and run the Docker containers:
+2. Run the automated setup script:
 ```sh
-docker-compose build
-docker-compose up
+python setup.py
+```
+
+This will:
+- Install all Python dependencies for backend services
+- Install Playwright browsers for web automation
+- Install Node.js dependencies for the frontend
+- Create service startup scripts
+
+3. Start all services:
+```sh
+python start_all.py
+```
+
+Or start services individually:
+```sh
+# Start only the backend
+python start_cortex_on.py
+
+# Start only the browser service  
+python start_ta_browser.py
+
+# Start only the frontend
+python start_frontend.py
 ```
 
 ### Access Services
